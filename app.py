@@ -1,5 +1,11 @@
 from flask import url_for, session, Flask, render_template, request, redirect
 import sys
+import pandas as pd
+import plotly
+import plotly.graph_objs as go
+import plotly.express as px
+
+from numpy import average
 app = Flask(__name__)
 app.secret_key = "tlzmfltzlrkanjdi"
 import database
@@ -78,6 +84,17 @@ def diary_info(index):
     return render_template("diary_info.html", 
         date = date, title = title, feeling = feeling, contents = contents, photo = photo)
 
+@app.route("/emotion")
+def emotion():
+    avg = database.avg_emotion()
+    average = avg
+    if avg > 7:
+        mood = "good"
+    elif avg > 4:
+        mood = "soso"
+    else:
+        mood = "bad"
+    return render_template("emotion.html", avg = average, mood = mood)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)
